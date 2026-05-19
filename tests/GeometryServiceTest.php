@@ -69,15 +69,33 @@ class GeometryServiceTest extends KernelTestCase
 
     public function testCalculateCubeVolume(): void
     {
-        // To do...
 
+        // sans self::bootKernel , symfony ne démarre pas
+
+        self::bootKernel();
+
+        $this->geoService = static::getContainer()->get(GeometryService::class);
+        $calculerVolumeCube = $this->geoService->calculateCubeVolume(3);
+        $this->assertEquals(27,  $calculerVolumeCube, "le volume d'un cube de côté 3 doit être égal à 27");
     }
     public function testCalculateCylinderVolume(): void
     {
-        // To do...
+        // sans self::bootKernel , symfony ne démarre pas
+
+        self::bootKernel();
+
+        $this->geoService = static::getContainer()->get(GeometryService::class);
+        $calculerVolumeCylindre = $this->geoService->calculateCylinderVolume(3, 5);
+        $this->assertEquals(141.37,  round($calculerVolumeCylindre, 2), "le volume d'un cylindre de rayon 3 et de hauteur 5 doit être égal à 141.37");
     }
     public function testCalculateConeVolume(): void
     {
-        // To do...
+        // sans self::bootKernel , symfony ne démarre pas
+
+        self::bootKernel();
+
+        $this->geoService = static::getContainer()->get(GeometryService::class);
+        $calculerVolumeCone = $this->geoService->calculateConeVolume(3, 5);
+        $this->assertEquals(47.12,  round($calculerVolumeCone, 2), "le volume d'un cône de rayon 3 et de hauteur 5 doit être égal à 47.12");
     }
 }
