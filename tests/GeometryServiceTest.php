@@ -14,55 +14,70 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class GeometryServiceTest extends KernelTestCase
 {
     private GeometryService $geoService;
-    
-    public function testCalculateSquareArea() : void
+
+    public function testCalculateSquareArea(): void
     {
         self::bootKernel();
         $this->geoService = static::getContainer()->get(GeometryService::class);
 
         $squareArea = $this->geoService->calculateSquareArea(5);
-        $this->assertEquals(25,$squareArea,"La surface d'un carré de coté 5 doit être égal à 25");
+        $this->assertEquals(25, $squareArea, "La surface d'un carré de coté 5 doit être égal à 25");
     }
 
     // Remplissez les test restants :)
 
-    public function testCalculateCircleArea() : void{
+    public function testCalculateCircleArea(): void
+    {
 
         // sans self::bootKernel , symfony ne démarre pas
 
-          self::bootKernel();
+        self::bootKernel();
 
-          $this->geoService = static::getContainer()->get(GeometryService::class);
+        $this->geoService = static::getContainer()->get(GeometryService::class);
 
-          $calculatecircleArea = $this->geoService->calculateCircleArea(2);
-          $this->assertEquals(12.60,round($calculatecircleArea,2), "La surface  d'un cercle de rayon 2 doit être égal à 12.56");
+        $calculatecircleArea = $this->geoService->calculateCircleArea(2);
+        $this->assertEquals(12.60, round($calculatecircleArea, 2), "La surface  d'un cercle de rayon 2 doit être égal à 12.56");
+    }
+    public function testCalculateRectangleArea(): void
+    {
+
+
+        // sans self::bootKernel , symfony ne démarre pas
+
+        self::bootKernel();
+
+        $this->geoService = static::getContainer()->get(GeometryService::class);
+
+        $calculerAirereactangle = $this->geoService->calculateRectangleArea(4, 5);
+        $this->assertEquals(20,  $calculerAirereactangle, "la surface d'un rectangle de longueur 4 et de largeur 5 doit être égal à 20");
+    }
+    public function testCalculateTriangleArea(): void
+    {
+
+        // sans self::bootKernel , symfony ne démarre pas
+
+        self::bootKernel();
+
+        $this->geoService = static::getContainer()->get(GeometryService::class);
+
+        $calculerAiretriangle = $this->geoService->calculateTriangleArea(20, 35);
+        $this->assertEquals(350,  $calculerAiretriangle, "la surface d'un triangle de base 20 etde hauteur 35 doit être égal à 350");
+    }
+
+
+
+
+    public function testCalculateCubeVolume(): void
+    {
+        // To do...
 
     }
-    public function testCalculateRectangleArea() : void{
-
-
-         // sans self::bootKernel , symfony ne démarre pas
-
-          self::bootKernel();
-
-          $this->geoService = static::getContainer()->get(GeometryService::class);
-            
-          $calculerAirereactangle=$this->geoService->calculateRectangleArea(4,5);
-          $this->assertEquals (20,  $calculerAirereactangle, "la surface d'un rectangle de longueur 4 et de largeur 5 doit être égal à 20");
-          
-
-    }
-    public function testCalculateTriangleArea() : void{
+    public function testCalculateCylinderVolume(): void
+    {
         // To do...
     }
-    public function testCalculateCubeVolume() : void{
-        // To do...
-
-    }
-    public function testCalculateCylinderVolume() : void{
-        // To do...
-    }
-    public function testCalculateConeVolume() : void{
+    public function testCalculateConeVolume(): void
+    {
         // To do...
     }
 }
