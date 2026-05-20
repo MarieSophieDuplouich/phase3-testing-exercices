@@ -34,7 +34,7 @@ class PremiumMemberServiceTest extends KernelTestCase
 
     /**
      * Test la fonction generateMemberProfile pour un cas de SUCCES.
-     * - assertIsArray
+     * - 
      * - assertArrayHasKey
      * - assertStringStartsWith
      * - assertSame : pour comparer deux tableaux associatifs
@@ -43,8 +43,30 @@ class PremiumMemberServiceTest extends KernelTestCase
      */
     public function testGenerateMemberProfileSuccess(): void
     {
-        
+        // sans self::bootKernel , symfony ne démarre pas
+
+        self::bootKernel();
+        $this->premiumMemberService = static::getContainer()->get(PremiumMemberService::class);
+
+        $generatemember = $this->premiumMemberService-> generateMemberProfile( "Billy", 25, ['Coding', 'Gaming', 'Fiesta']);
+        $this->assertEquals("Billy", $generatemember['meta']['username'], "Profile généré avec succès");
+
+        // Ajoutez les autres vérifications juste en dessous
+       
+        // Vérifie que $generatemember est bien un tableau assertIsArray
+         $this->assertIsArray($generatemember, "le profil du emembre doit générer un tableau aassociatif");
+
+        // Vérifie que le tableau contient  la clé 'id' assertArrayHasKey
+        $this->assertArrayHasKey('id', $generatemember);
+
+        //vérifie que le tableau commence par "user_" assertStringStartsWith
+        $this->assertStringStartsWith("usr_",$generatemember['id']);
+
+        //Vérifie que created_at correspond au format 2026-05-20  assertMatchesRegularExpression
+        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $generatemember['created_at']);
     }
+
+
 
     /**
      * Test la fonction generateMemberProfile pour un cas d'ECHEC lorsque le nom d'utilisateur est vide.
@@ -61,27 +83,42 @@ class PremiumMemberServiceTest extends KernelTestCase
 
     public function testGenerateMemberProfileThrowsExceptionForUnderage(): void
     {
-        // To do...
-        // $this->premiumMemberService->...
+       $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le membre doit être majeur.");
+        $this->premiumMemberService->generateMemberProfile("Billy", 17, ['Coding', 'Gaming']);
     }
 
     public function testGenerateMemberProfileThrowsExceptionForEmptyUsername(): void
     {
-        // To do...
+          
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le nom d'utilisateur ne peut pas être vide.");
+        $this->premiumMemberService->generateMemberProfile("", 25, ['Coding', 'Gaming']);
+
     }
+
+
+
+    //Regardez  pour la fonction testApplyPromoCodeVip(), la fonction applyPromoCode
 
     public function testApplyPromoCodeVip(): void
     {
-        // To do...
-    }
+        
+
+
     
+    }
+
     // On y est presque...
+
+    // Regardez pour la fonction testIsEligibleForUpgrade(), la fonction isEligibleForUpgrade()
 
     public function testIsEligibleForUpgrade(): void
     {
         // To do...
     }
 
+    
 
     public function testApplyPromoCodeSummer50(): void
     {
