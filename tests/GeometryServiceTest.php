@@ -36,7 +36,7 @@ class GeometryServiceTest extends KernelTestCase
         $this->geoService = static::getContainer()->get(GeometryService::class);
 
         $calculatecircleArea = $this->geoService->calculateCircleArea(2);
-        $this->assertEquals(12.60, round($calculatecircleArea, 2), "La surface  d'un cercle de rayon 2 doit être égal à 12.56");
+        $this->assertEquals(12.57, round($calculatecircleArea, 2), "La surface  d'un cercle de rayon 2 doit être égal à 12.57");
     }
     public function testCalculateRectangleArea(): void
     {
