@@ -146,9 +146,8 @@ class PremiumMemberServiceTest extends KernelTestCase
 
     public function testApplyPromoCodeNullAmountUnchanged(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Le code promo est null ou invalide.");
-        $this->premiumMemberService->applyPromoCode(100, null);
+       $result = $this->premiumMemberService->applyPromoCode(100, null);
+        $this->assertEquals(100, $result, "Si le code promo est null, le montant original doit être retourné");
     }
 
     public function testIsEligibleForUpgradeSuccess(): void
@@ -214,9 +213,8 @@ class PremiumMemberServiceTest extends KernelTestCase
 
     public function testRenewSubscription1Month(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        //    $this->expectExceptionMessage("La durée doit être de 1, 6 ou 12 mois.");
-        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $this->premiumMemberService->renewSubscription(1), "La date de renouvellement doit être au format YYYY-MM-DD");
+        $result = $this->premiumMemberService->renewSubscription(1);
+        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $result, "La date de renouvellement doit être au format YYYY-MM-DD");
     }
 
     public function testRenewSubscriptionInvalidDurationThrowException(): void
