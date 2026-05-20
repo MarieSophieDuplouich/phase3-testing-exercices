@@ -48,19 +48,19 @@ class PremiumMemberServiceTest extends KernelTestCase
         self::bootKernel();
         $this->premiumMemberService = static::getContainer()->get(PremiumMemberService::class);
 
-        $generatemember = $this->premiumMemberService-> generateMemberProfile( "Billy", 25, ['Coding', 'Gaming', 'Fiesta']);
+        $generatemember = $this->premiumMemberService->generateMemberProfile("Billy", 25, ['Coding', 'Gaming', 'Fiesta']);
         $this->assertEquals("Billy", $generatemember['meta']['username'], "Profile généré avec succès");
 
         // Ajoutez les autres vérifications juste en dessous
-       
+
         // Vérifie que $generatemember est bien un tableau assertIsArray
-         $this->assertIsArray($generatemember, "le profil du emembre doit générer un tableau aassociatif");
+        $this->assertIsArray($generatemember, "le profil du emembre doit générer un tableau aassociatif");
 
         // Vérifie que le tableau contient  la clé 'id' assertArrayHasKey
         $this->assertArrayHasKey('id', $generatemember);
 
         //vérifie que le tableau commence par "user_" assertStringStartsWith
-        $this->assertStringStartsWith("usr_",$generatemember['id']);
+        $this->assertStringStartsWith("usr_", $generatemember['id']);
 
         //Vérifie que created_at correspond au format 2026-05-20  assertMatchesRegularExpression
         $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $generatemember['created_at']);
@@ -83,56 +83,72 @@ class PremiumMemberServiceTest extends KernelTestCase
 
     public function testGenerateMemberProfileThrowsExceptionForUnderage(): void
     {
-       $this->expectException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Le membre doit être majeur.");
         $this->premiumMemberService->generateMemberProfile("Billy", 17, ['Coding', 'Gaming']);
     }
 
     public function testGenerateMemberProfileThrowsExceptionForEmptyUsername(): void
     {
-          
+
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Le nom d'utilisateur ne peut pas être vide.");
         $this->premiumMemberService->generateMemberProfile("", 25, ['Coding', 'Gaming']);
-
     }
 
 
 
     //Regardez  pour la fonction testApplyPromoCodeVip(), la fonction applyPromoCode
-
+    /**
+     * Calcule une réduction basée sur un code promo et un montant.
+     * Specifications :
+     * - Le code promo "VIP20" applique une réduction de 20%
+     * - Le code promo "SUMMER50" applique une réduction de 50%
+     * - Si le code promo est null ou invalide, aucun rabais n'est appliqué et le montant original est retourné
+     * - Tout autre code promo sauf null doit throw une InvalidArgumentException (héhé attention cette specification n'est pas implémentée dans la méthode)
+     */
     public function testApplyPromoCodeVip(): void
     {
-        
 
-
-    
+        $applycodevip = $this->premiumMemberService->applyPromoCode("100", "VIP20");
+        $this->assertEquals(80, $applycodevip, "Le code promo VIP20 doit appliquer une réduction de 20%");
     }
 
     // On y est presque...
 
     // Regardez pour la fonction testIsEligibleForUpgrade(), la fonction isEligibleForUpgrade()
-
+    /**
+     * Vérifie si un membre est éligible à une mise à niveau premium.
+     * - Le membre doit avoir au moins 3 centres d'intérêt
+     * - Le membre doit être âgé d'au moins 18 ans
+     * - Le montant dépensé doit être supérieur ou égal à 100
+     */
     public function testIsEligibleForUpgrade(): void
     {
-        // To do...
+        $iseligibleforupgrade = $this->premiumMemberService->isEligibleForUpgrade(25, ['Coding', 'Gaming', 'Fiesta'], 150);
+        $this->assertTrue($iseligibleforupgrade, "Le membre doit être éligible pour la mise à niveau premium");
     }
 
-    
+
 
     public function testApplyPromoCodeSummer50(): void
     {
-        // Todo ...
+        $applycodesummer50 = $this->premiumMemberService->applyPromoCode(100, "SUMMER50");
+        $this->assertEquals(50, $applycodesummer50, "Le code promo SUMMER50 doit appliquer une réduction de 50%");
     }
 
     public function testApplyPromoCodeThrowExceptionInvalid(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le code promo est invalide.");
+        $this->premiumMemberService->applyPromoCode(100, "INVALIDCODE");
     }
 
     public function testApplyPromoCodeNullAmountUnchanged(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le code promo est null ou invalide.");
+        $this->premiumMemberService->applyPromoCode(100, null);
     }
 
     public function testIsEligibleForUpgradeSuccess(): void
