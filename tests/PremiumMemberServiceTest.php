@@ -110,7 +110,7 @@ class PremiumMemberServiceTest extends KernelTestCase
     public function testApplyPromoCodeVip(): void
     {
 
-        $applycodevip = $this->premiumMemberService->applyPromoCode("100", "VIP20");
+        $applycodevip = $this->premiumMemberService->applyPromoCode(100, "VIP20");
         $this->assertEquals(80, $applycodevip, "Le code promo VIP20 doit appliquer une réduction de 20%");
     }
 
@@ -153,70 +153,93 @@ class PremiumMemberServiceTest extends KernelTestCase
 
     public function testIsEligibleForUpgradeSuccess(): void
     {
-        // Todo ...
+        $iseligibleforupgrade = $this->premiumMemberService->isEligibleForUpgrade(30, ['Coding', 'Gaming', 'Fiesta'], 200);
+        $this->assertTrue($iseligibleforupgrade, "Le membre doit être éligible pour la mise à niveau premium");
     }
 
     public function testIsEligibleForUpgradeUnderAge(): void
     {
-        // Todo ...
+        $iseligibleforupgrade = $this->premiumMemberService->isEligibleForUpgrade(17, ['Coding', 'Gaming', 'Fiesta'], 200);
+        $this->assertFalse($iseligibleforupgrade, "Le membre ne doit pas être éligible pour la mise à niveau premium car il est mineur");
     }
 
     // C'est encore loin ? 8( 
 
     public function testIsEligibleForUpgradeInsufficientInterests(): void
     {
-        // Todo ...
+        $iseligibleforupgrade = $this->premiumMemberService->isEligibleForUpgrade(25, ['Coding'], 200);
+        $this->assertFalse($iseligibleforupgrade, "Le membre ne doit pas être éligible pour la mise à niveau premium car il n'a pas assez de centres d'intérêt");
     }
 
     public function testIsEligibleForUpgradeInsufficientSpent(): void
     {
-        // Todo ...
+        $iseligibleforupgrade = $this->premiumMemberService->isEligibleForUpgrade(25, ['Coding', 'Gaming', 'Fiesta'], 50);
+        $this->assertFalse($iseligibleforupgrade, "Le membre ne doit pas être éligible pour la mise à niveau premium car il n'a pas dépensé assez d'argent");
     }
 
     public function testCalculateLoyaltyPointsStandard(): void
     {
-        // Todo ...
+        $iscalculateloyaltypointsstandard = $this->premiumMemberService->calculateLoyaltyPoints(50, false);
+        $this->assertEquals(500, $iscalculateloyaltypointsstandard, "Chaque euro dépensé doit rapporter 10 points pour les membres standard");
     }
 
     public function testCalculateLoyaltyPointsPremium(): void
     {
-        // Todo ...
+        $iscalculateloyaltypointspremium = $this->premiumMemberService->calculateLoyaltyPoints(50, true);
+        $this->assertEquals(750, $iscalculateloyaltypointspremium, "Les membres premium doivent obtenir un bonus de 50% sur leurs points");
     }
 
     public function testCalculateLoyaltyPointsNegativeThrowException(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le montant ne peut pas être négatif.");
+        $this->premiumMemberService->calculateLoyaltyPoints(-10, false);
     }
 
     public function testSummarizeSpending(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le tableau de transactions ne peut pas être vide.");
+        $this->premiumMemberService->summarizeSpending([]);
     }
 
     public function testSummarizeSpendingEmptyThrowException(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le tableau de transactions ne peut pas être vide.");
+        $this->premiumMemberService->summarizeSpending([]);
     }
 
     // On a presque fini :)
 
     public function testRenewSubscription1Month(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        //    $this->expectExceptionMessage("La durée doit être de 1, 6 ou 12 mois.");
+        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $this->premiumMemberService->renewSubscription(1), "La date de renouvellement doit être au format YYYY-MM-DD");
     }
 
     public function testRenewSubscriptionInvalidDurationThrowException(): void
     {
-        // Todo ...
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("La durée doit être de 1, 6 ou 12 mois.");
+        $this->premiumMemberService->renewSubscription(3);
     }
 
     public function testAnonymizeProfile(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le profil est invalide ou incomplet.");
+
+
+        $this->premiumMemberService->anonymizeProfile(['meta' => ['username' => 'Billy', 'age' => 25, 'interests' => ['Coding', 'Gaming']]]);
     }
 
     public function testAnonymizeProfileInvalidThrowException(): void
     {
-        // Todo ...
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Le profil est invalide ou incomplet.");
+        $this->premiumMemberService->anonymizeProfile(['meta' => ['username' => 'Billy']]);
     }
 }
